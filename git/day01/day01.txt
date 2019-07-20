@@ -1,0 +1,48 @@
+git命令
+    1、初始化 git init
+    2、git add  将文件加入到本地暂存区，　撤销　git rm --cached
+    3、git commit
+    4、git log
+    5、git status
+
+    6、git diff [file] 查看工作区文件与仓库区差异
+
+    从仓库区找
+    7、git checkout [file]
+
+    8、git rm
+    9、git mv [file] new_path  将文件从一个位置移动到另一个位置
+
+版本控制
+    发现最近的一次commit 提交错误，撤销最近的commit，回退到上一次commit版本
+    git reset --hard HEAD^
+
+    本地代码直接回退到指定 commit_id　的版本
+    git reset --hard commit_id　
+
+    查看本仓库的所有操作记录，进而选择回滚到某一步操作对应的commit 版本
+    git reflog
+
+    版本标签, 并为此标签添加说明信息
+    git tag tag_name -m "tag message"
+
+工作区保存
+    查看工作区
+    git stash list
+
+    保存工作区
+    git stash save "本次暂存说明"
+
+    应用工作区，即使用某工作区暂存的内容，单不会从工作区删除
+    git stash apply stash@{n}
+    git stash list 查看还继续存在，暂存的东西还存在
+
+
+分支管理
+    创建分支
+    git branch
+
+
+
+
+

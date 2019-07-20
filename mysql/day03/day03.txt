@@ -1,0 +1,168 @@
+day02 回顾
+1、类型
+    *数值
+        int
+        float(m,n)
+        decimal
+    *字符
+        char
+        varchar
+    *枚举
+        enum
+        set
+    *日期时间累心
+        date
+        time
+        datetime :空值
+        timestamp:  默认返回系统当前时间
+2、內建函数
+    NOW()
+    CUTDATE()
+    CURTIME()
+    YEAR(字段名)  -> 获取当前字段对应的年份
+    DATE(字段名)  -> 获取当前字段对应的日期
+    TIME(字段名)  -> 获取当前字段对应的时间,时分秒
+3、表字段操作： alter table 表名 执行动作
+    * add 字段名 数据类型 first/after 字段名
+    *
+4、表记录管理
+    insert into 表名 values (值1， 值2...)
+    delete from 表名 where 条件
+    update 表名 set 字段名=新值 where 条件
+    select 字段名 from 表名 where 条件
+5、运算符操作
+    1、数值 && 字符 && 逻辑比较 && 范围内比较
+        * and  or
+        * between 值1 and  值2
+        * in (值1， 值2...)
+        * not in (值1， 值2...)
+    2、 空， 非空
+        is null
+        is not null
+    3、模糊查询
+        where  字段名 like  %_
+        show tables like  '%san%'
+        show variables like '%character%'
+6、查询
+    1、order by 字段名 asc/desc
+    2、limit
+        limit n
+        limit m,n
+        limit (m-1)*n, n  分页查询的概念
+    3、聚合函数
+        avg(*), max(*), min(*), sum(*), count(*)
+    4、分组 group by
+        select 后字段名如果没有在group by之后出现，则必须要对该字段进行聚合处理
+    5、having语句，对分组group by之后的结果进行查询
+        * where 只能操作表中实际存在的字段, having 可以操作聚合函数生成的显示列
+
+************************************************************************
+Day03 笔记
+1、sql 查询
+    1、distinct 语句
+        * sanguo表中 有哪几个国家
+            selec count(distinct(country)) from sanguo;
+        * distinct 和 from 之间所有字段都形同才去重
+    2、查询是做数学运算
+        + -  * / %
+        在查询时所有英雄攻击力翻倍
+2、嵌套查询（子查询）
+    1、把内层的查询结果，作为外层查询的条件
+        把攻击值小于平均攻击值的英雄名字和攻击值显示一下
+        select name, gongji from sanguo where (country,gongji) in(select country,max(gongji) from sanguo group by country);
+
+3、多表查询
+    1、笛卡尔积： 多表查询，不加where条件
+        select 表名.字段名 from 表1, 表2;
+4、连接查询
+    1、内连接
+        * select xxx from 表1  inner join 表2 on 条件
+            inner join 表3 on 条件
+
+    2、外连接
+        * 左连接 left join
+            以左边为主显示信息
+        * 右连接 right join
+            以右边为主显示信息
+
+5、约束： 来保证数据的完整性，一致性，有效性
+    1、非空约束(not null)
+        name varchar(20) not null
+    2、默认约束(default)
+        sex enum('M', 'F', 'S') default 'S'
+6、索引
+    1、定义：对数据库表的一列或多列的值进行排序的一种结构(BTree方式)
+    2、优点：
+        * 加快数据的检索速度
+    3、缺点：
+        * 生成索引文件，额外占用物理存储空间
+        * 当表中的数据有变化时，索引记录会动态维护，会消耗系统资源，降低数据维护速度
+    4、哪些字段适合创建索引
+        * 经常用来查询的字段(select后的字段)
+        * 经常用来做条件判断的字段(where后的字段)
+        * 经常用来排序的字段(order by后的字段)
+7、索引的重要性
+    1、开始运行时间检测 :  set profiling=1
+        show variables like 'profiling'; 查看运行时间检测开关是否开启
+    2、执行查询语句(无索引)
+        select name from t1 where name='xxx'
+    3、在name 字段创建索引
+        create index index_name on t1(name)
+    4、再执行查询语句(有索引)
+        select name from t1 where name='xxx'
+8、普通索引（index）&& 唯一索引(unique)
+    1、使用规则
+        *可设置多个字段
+        *index : 无约束， KEY标示为MUL
+        *unique: 字段值不允许重复，但可以为NULL, 标志为NUI
+    2、创建index/unique
+        * create table 表名(
+            ...,
+            index(字段名),
+            index(字段名)
+          ) charset=utf8;
+        * create index 索引名 on 表名(字段名);
+    3、查看索引
+        * desc 表名;
+        * show index from 表名;
+    4、删除索引(每次只能删除一个索引)
+        drop index index_name;
+9、主键索引(primary key)
+    自增长属性(auto_increment)
+    1、使用规则
+        * 只能有一个主键字段
+        * 约束：不允许重复， 且不能NULL
+        * KEY标志： PRI
+        * 通常设置记录编号字段id，能唯一锁定1条记录
+    2、创建
+        * id int primary key auto_increment, 创建表时创建主键
+        * alter table 表名 add primary key(id); 已有表增加主键
+    3、删除主键
+        如果存在自增长属性，不允许直接删除主键
+        1、先删除自增长属性 auto_increment
+            alter table 表名 modify id int;
+        2、删除主键
+            alter table 表名 drop primary key;
+
+10、如何对密码加密
+    1、导入加密模块
+        from hashlib import sha1, md5
+    2、创建加密对象
+        s = sha1()
+    3、进行加密，加密对象一定为bytes数据类型
+        s.update("加密字符串".encode())
+    4、获取十六进制的加密结果
+        pwd = s.hexdigest()
+11、在线安装第三缸模块
+    安装 pip:
+        sudo apt-get install python3-pip
+    安装第三方模块：
+        sudo pip3 install pymysql
+
+
+
+
+
+
+
+

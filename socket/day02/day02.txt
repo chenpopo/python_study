@@ -1,0 +1,20 @@
+UDP 套接字
+    udp是以数据报的方式发送消息，有消息边界，不存在粘包的情况。
+    使用udp协议时不需要建立连接，只需要知道对方的ip和端口号就可以直接发数据包。
+    但是发送的数据包是否能到达就不知道了。使用udp速度快，但不可靠。
+    当会话结束后，只需要客户端关闭连接即可，服务端无需关闭，因为是无连接的。
+
+    1、建立s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  #SOCK_DGRAM指类型是UDP
+    2、设置监听IP和端口 s.bind(ip, port)
+    3、接收数据
+        data,addr=s.recvfrom(1024)  #每次接受1024个字节，data是接收到的内容，addr是发送者的IP地址
+
+    tcp和udp的区别：
+    1、流失套接字是以字节流方式传输数据， 数据报则以数据报方式传输
+    2、
+    3、tcp保证传输的可靠性，udp不保证
+    4、tcp需要listen accept操作， udp不需要
+    5、
+
+
+sockfd = sock

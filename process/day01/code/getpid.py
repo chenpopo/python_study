@@ -1,0 +1,15 @@
+import os
+from time import sleep
+
+pid = os.fork()
+
+if pid<0:
+    print("Error")
+elif pid == 0:
+    sleep(2)
+    print("Child PID:", os.getpid())
+    print("Get parent PID:", os.getppid())
+else:
+    print("Parent PID:", os.getpid())
+    print("Get child PID:", pid)
+    os._exit(3)

@@ -1,0 +1,207 @@
+系统模块 sys
+	常用函数
+		sys.version
+		sys.versioninfo
+		sys.platform
+		sys.copyright
+		sys.getrecursionlimit()   #系统默认设定的递归深度1000，可以修改
+		sys.setresursionlimit(2000)  #修改系统默认递归深度为2000
+		sys.exit()		#终止当前运行程序
+		
+		
+自定义模块并导入
+	要求：
+		模块文件名后缀必须是.py结尾
+		模块文件名必须是合法的标识符
+		避免名称和內建模块冲突
+	
+	导入方式：
+		import 语句
+		import 
+	
+	示例：
+		mymod.py
+		test_mymod.py
+	
+import 语句 搜索模块的路径顺序
+	1、搜索內建模块
+	2、搜索程序运行时的路径
+	3、sys.path提供的路径
+		sys.path绑定了一个列表，在列表里是模块的搜索路径
+	
+	for p in sys.path:
+		print(p)
+	
+	大部分下载安装的第三方模块在下面两个路径中：
+	/usr/local/lib/python3.5/dist-packages
+	/usr/lib/python3/dist-packages
+
+
+全局变量是模块内的全部(全局变量只能在当前模块内有效)
+
+
+模块的加载过程
+	在模块导入时，模块的所有语句会执行
+
+模块被导入和执行的过程
+	1、先搜索相关路径找模块(.py)
+	2、判断是否有此模块对应的.pyc文件，如果.pyc文件比.py文件新，则直接加载.pyc
+	3、否则用模块.py文件生成 .pyc 并加载执行
+
+
+模块的编译
+							编译											执行
+	mymod.py ---------->  mymod.pyc --------------> python3
+
+
+模块的属性
+	__doc__ 属性
+		用于绑定模块的文档字符串
+		
+	__file__ 属性
+		用于绑定模块对应的文件名
+	
+	__name__ 属性
+		用来记录模块自身的名字
+	
+		作用：
+			1、记录模块名
+			2、用来判断是否为主模块
+		说明：
+			当此模块作为主模块运行时， __name__绑定 ‘__main__’
+			当此模块不是主模块运行时， __name__ 绑定文件名
+
+
+
+模块的 __all__ 列表
+	模块中的 __all__ 列表是一个用来存放可导出属性字符串列表
+	
+	作用：
+		限定当用  from xxx import * 导入时， 只导入 __all__ 列表中限定的属性
+	示例见：
+		mymod_all.py
+
+
+模块的隐藏属性
+	模块中以 下划线(_) 开头的属性， 在 from xxx import * 语句 导入时将不被导入，通常成为隐藏属性，是模块内部自己使用的属性
+	
+	示例见：
+		mymod_hidden.py
+
+
+随机模块  random
+	作用：
+		用于模拟或生成随机输出的模块
+	文档参见：
+		python_base_docs_html / 随机模块random.html
+
+
+
+包（模块包） package
+	包就是将模块以文件夹的组织形式进行分类管理的方法
+	
+	作用：
+		将一系列模块进行分类管理，有利于防止命名冲突
+		可以在需要时加载一个或部分模块，而不是全部模块
+	包示例：
+		mypack/
+			__init__.py
+			menu.py
+			games/
+				__init__.py
+				contra.py
+				supermario.py
+				tanks.py
+			office/
+				__init__.py
+				excel.py
+				word.py
+				
+	创建命令：
+		mkdir mypack
+		cd mypack
+		touch __int__.py menu.py
+		mkdir games office
+		cd games
+		touch __init__.py contra.py, supermario.py tanks.py
+		cd ../office
+		touch __init__.py excel.py word.py
+
+
+
+包的导入
+	同模块的导入规则
+		import 包名 [as 包别名]
+		import 包名.模块名 [as 模块新名]
+		import 包名.子.包名.模块名 [as 模新别名]
+		
+		from 包名 import 模块名 [as 模块新名]
+		from 包名.子包名 import 模块名 [as 模块新名]
+		from 包名.子包名.模块名 import 属性名 [as 属性新名]
+		
+		from 包名 import *
+		from 包名.模块名 import *
+		... ...
+
+
+import 语句所搜包的路径的顺序
+	1、搜索程序的运行是路劲（当前工作目录）
+	2、sys.path 提供的路径
+	
+包的 __init__.py 文件
+	__init__.py 是常规包内必须存在的文件
+	__init__.py 是包加载时被自动调用
+	
+	作用：
+		编写此包的内容
+		在内部填写包的文档字符串
+		
+	示例见：
+		mypack/__init__.py
+		
+		
+__init__.py 内的 __all__ 列表
+	作用：
+		用来记录此包内有哪些子包或模块需要被导入
+		当用from 包import * 语句导入模块时，只查找 __all__中所有模块或子包
+		
+	说明：
+		__all__ 列表只对 from xxx import * 语句起作用
+		
+包的相对导入
+	包的相对导入是值保内模块的相互导入
+	
+	语法：
+		from相对路径包或模块 import 属性或模块名
+		或 from 相对路径包或模块 import *
+		
+	相对路径：
+		在 from import 语句和 from import * 语句中可以使用相对导入
+		from 和 import 之间可以使用相对路径
+		. 代表当前目录
+		.. 代表上一级目录
+		... 代表上二级目录
+		.... 以此类推
+	注：
+		相对导入时不能超过包的目录范围
+
+
+练习：
+	1、猜数字游戏
+		随机生成一个0~100之间的整数，用变量x绑定，让用户输入一个数用变量y绑定，输入猜数字结果
+		如果y 等于 生成的数 x 则提示“恭喜您猜对了”并退出程序
+		如果y 大于 生成的数x  则提示“您猜大了“，然后继续猜
+		如果 y 小于生成的数x  则提示”您猜小了“，然后继续猜
+		直到猜对为止，显示用户猜数字的次数后退出程序
+	2、写程序模拟斗地主发牌，牌共54张，
+		黑桃（\u2660）, 梅花(\u2663)， 方块(\u2666)， 红桃(\u2665)
+		
+		数字： A2 - 10JQK
+		大王和小王
+		
+		三个人， 每个人发牌17张，底牌留三张
+		输入回车，打印第一个人的17张牌
+		输入回车，打印第二个人的17张牌
+		输入回车，打印第三个人的17张牌
+		输入回车，打印三张底牌
+

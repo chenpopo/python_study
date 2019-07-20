@@ -1,0 +1,191 @@
+day17回顾
+类属性（类变量）
+    class Dog:
+        legs = 4
+类方法：
+    class Human:
+        total_count = 0
+
+        #类的对象方法
+        @classmethod
+        def get_total_count(cls):
+            return cls.total_count
+静态方法：
+    class A:
+        #通过类名可以直接调用
+        @staticmethod
+        def myadd(x, y):
+            ...
+类的文档字符串：
+    class A:
+        '''类的文档字符串'''
+    类的文档字符串绑定在 A.__doc__ 属性上
+类的 __base__ 属性
+    绑定此类的基类，即此类的继承父类
+
+类的 __slots__ 列表
+    限制此类里只能有列表中的属性，其他默认属性都没有
+    class Student:
+        __slots__ = ['name', 'age']
+
+继承：
+    什么是继承
+        作用：
+        1、在父类中实现代码共享
+        2、子类可以扩展功能（不改变父类的功能）
+    class MyList(list):
+        def hellp(self):
+            print("hello")
+
+单继承
+    一个子类由一个父类派生出来
+        class A(object):
+            pass
+
+覆盖override
+    作用：
+        修改父类方法的功能
+    1、有继承派生关系
+    2、子类有和父类同名的方法
+    3、子类对象调用此方法
+    class A:
+        def dowork(self):
+            print(a)
+    class B(A):
+        def dowork(self):
+            print(b)
+
+    b = B()
+    b.dowork() #此时dowork方法被调用
+
+需要显示调用父类的被覆盖方法
+    A.dowork(b)
+    super(B, b).dowork()
+    super().dowork() #此种方式只能在B类的方法内被使用
+
+super() 函数
+
+显示调用父类的初始化方法 __init__
+    super().__init__(实参方法)
+
+issubclass 函数
+    判断继承关系
+
+
+
+
+day18 笔记
+封装：
+    封装是指隐藏类的实现细节，让使用者不关系这些细节
+    封装的目的是让使用者能够尽可能少的方法或属性操作对象
+    python 的封装是模拟的封装
+私有属性和方法：
+    python类中以双下划线 "__"开头，不以双下划线结尾的标识符为私有成员， 私有成员只能使用方法进行访问和修改
+    示例见：
+        enclosure.py
+
+多态：
+    字面意思是“多种状态”
+    多态是指在继承/派生关系的类中，调用基类的对象的方法，实际能调用子类的覆盖方法的现象叫多态
+    状态：
+        静态(编译时状态)
+        动态(运行时状态)
+    说明：
+        python全部对象都只有运行时状态，没有编译时状态
+    示例见：
+        poly.py
+
+多继承 multiple inheritance
+    多继承是指一个子类继承自两个或两个以上的基类
+
+    语法：
+        class 类名(基类名1， 基类名2， 基类名3， ...)
+
+    示例见：
+        multiple_inherit.py
+
+多继承的问题MRO(method resolution order)的问题
+    类的 __mro__ 属性
+        用来记录每个类的方法查找顺序
+用MRO来确定砖石继承的方法查找顺序
+        A
+       / \
+      B   C
+       \ /
+        D
+      示例见diamond.py
+      如果B中执行 super()方法，按照mro顺序 会调用C中代码
+
+
+
+
+
+
+
+面向对象编程语言特征
+    封装
+    继承
+    多态
+面向对象的编程语言：
+    C++, C#, Python, Java, objective-c, swift, Ruby
+
+函数(方法)重写
+    在自定义的类内添加相应的方法，让自定义的类创建的实例像内奸对象一样进行內建函数操作
+
+对象转字符串函数的重写(覆盖)
+    repr(obj)  返回一个符合Python语法规则的字符串
+        通常：
+            eval(repr(obj)) == obj
+    str(obj) 通过给定的对象返回一个字符串(这个字符串通常是给人阅读的)
+    说明：
+        1、str(obj)函数先查找obj.__str__()方法
+        2、repr(obj)函数先查找obj.__repo__()方法
+        3、python 的內建函数的执行，会先查找 obj中的同名的內建函数
+
+內建函数的重写
+    __abs__         abs(obj)
+    __len__
+    __reversed__
+    __round__
+
+    示例见 len_override.py
+数据转换函数重写
+    __int__
+    __float__
+    __complex__
+    __bool__
+
+
+布尔测试函数重写
+    作用：
+        用于 bool(obj) 函数取值
+        用于if语句真值表达式取值
+        用于while语句真值表达式取值
+    方法名： __bool__
+    说明：
+        当存在 __bool__ 方法时，调用obj.__obj__() 取值
+        当不存在 __bool__ 方法时，调用obj.__len__() 取值
+        当再不存在__len__ 方法是，直接返回True
+    示例见：
+        bool.py
+
+
+
+
+
+迭代器（高级）
+    迭代器可以通过next(obj)函数取值的对象，就是迭代器
+
+    迭代器协议：
+        迭代器协议是指对象能够使用 next 函数获取下一项数据，
+        在没有下一项数据时出发一个StopIteration异常来终止迭代的约定
+    迭代器协议的实现方法：
+        __next__(self)
+
+可迭代对象：
+    是指能用iter(ob) 函数返回迭代器的对象
+    可迭代对象的实现方法：
+        __iter__(self)
+示例见：
+    myiterable.py
+

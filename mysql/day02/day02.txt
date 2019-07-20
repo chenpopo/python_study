@@ -1,0 +1,132 @@
+mysql
+
+1、修改表结构
+    1、alter   语法： alter table 表名 执行动作
+        1、add 增加新字段
+            语法: alter table 表名 add 字段名 字段类型
+            注： 默认新字段添加到表的最后
+                使用first 可以添加到第一列
+                使用 after 可以添加到指定列之后
+        2、drop 删除字段
+            语法： alter table 表名 drop 字段名
+        3、modify 修改字段数据类型
+            语法： alter table 表名 modify 字段名 新数据类型
+            注： 如果字段中已经存有数据，如果新数据类型满足不了已有数据的存在，则修改会失败
+2、数据类型
+    1、数据类型
+    2、字符类型
+        字符类型宽度和数值类型宽度的区别
+        *字符宽度，超过范围不能存储
+        *数值宽度，显示宽度，只用于查询显示，和存储无关，可用zerofill查看效果。
+        * id int(3) zerofill，显示宽度不够，用0补充
+    3、枚举类型
+        * 单选 (enum): 字段名 enum('M','F')
+        * 多选 (set)
+            注意： hobby set('python', 'study', 'mysql')
+            插入记录时： 'python,mysql'
+    4、日期时间类型
+        * date: 'yyyy-mm-dd'  年月日
+        * time: 'hh:mm:ss'  时分秒
+        * datetime: 'yyyy-mm-dd hh:mm:ss' 年月日时分秒， 不赋值默认为空值
+        * timestamp: 'yyyy-mm-dd hh:mm:ss' 年月日时分秒， 不赋值默认为系统当前时间
+3、日期时间函数
+    * now(): 返回服务器当前时间
+    * curdate(): 返回当前日期
+
+    * year(字段名): 返回指定字段的年份
+    * date(字段名): 返回指定字段的日期
+    * time(字段名): 返回指定字段的时间
+
+4、表记录管理
+    1、删除(delete)
+        * delete from 表名 where 条件;
+        * delete from 表名;   不加where条件就是删除所有数据
+    2、修改(update)
+        * update 表名 set 字段1=值1,字段2=值2 where 条件;
+        * update 表名 set 字段1=值1,字段2=值2;   不加where条件就是更新全表所有数据
+
+5、表结构修改和表记录修改的对比
+    表               记录
+    create table    insert into
+    drop            delete
+    alter           update
+    desc            select
+
+6、运算符操作
+    1、数值比较/字符比较/逻辑比较
+        * 数值比较 : > >= < <= = !=
+        * 字符串：  = !=
+        * 逻辑比较： and,  or, between 值1 and 值2
+        * 练习
+            1、查找攻击力高于150的英雄名字和攻击值
+            select name, gongji from sanguo where gongji>150;
+            2、找出攻击值高于200的蜀国英雄的名字和攻击值
+            select name, gongji from sanguo where gongji>200 and country='蜀国';
+            3、将赵云的攻击力设置为360， 防御力设置68
+            update sanguo set gongji=360, fangyu=68 where name='赵云';
+            4、查找蜀国和魏国的英雄信息
+            select * from sanguo where country='蜀国' or country='魏国';
+
+
+    2、匹配空, 非空
+        * 空： where name is null
+        * 非空： where name is not null
+        * null: 空值， 只能用 is null ,  is not null 去匹配
+        * '': 空字符串， 用 =,  != 去匹配
+        * 匹配姓名为null 的蜀国男英雄信息
+        select * from sanguo where name is null and sex='男';
+        * 匹配姓名为''的英雄信息
+        select * from sanguo where name='';
+
+    3、like模糊匹配
+        1、where 字段名 like 表达式
+        2、表达式
+            %： 匹配0个或多个字符
+            _: 匹配一个字符
+    4、范围内比较
+        in ---- 比如 where country in('蜀国', '魏国')
+        not in ------ 比如 where country not in('蜀国', '魏国')
+
+
+7、SQL查询
+    1、总结
+        select ... 聚合函数 from 表名
+        1、where ...
+        2、group by ...
+        3、having ...
+        4、order by ...
+        5、limit ...;
+
+    2、order by ：
+        order by 字段 asc 升序/desc 降序
+
+    3、limit(永远放在SQL命令的最后)
+        1、作用：   限制显示查询记录的条数
+        2、用法：
+            * limit n: 显示n条记录
+            * limit m,n： 从第m+1条记录开始，显示n条
+        3、在蜀国英雄中查找防御值 倒数第二名至倒数第四名的英雄信息
+                select * from sanguo where country='蜀国' order by fangyu asc limit 1,3;
+            在蜀国英雄中，查找攻击值前3名且名字不为null的英雄的名字，攻击值，国家
+                select name, gongji, country from sanguo where name is not null and country='蜀国' order by gongji desc limit 3;
+
+        4、limit m,n
+            *每页显示5条记录，显示第三页的记录
+            limit m,n
+            limit (m-1)*5, n
+    4、
+
+        1、分类
+            avg(字段名): 该字段的平均值
+            sum(字段名): 求和
+            max(字段名): 最大值
+            min(字段名): 最小值
+            count(字段名): 统计该字段记录的个数
+        2、表中攻击力最大值是多少？
+            select max(gongji) from sanguo;
+    5、group by ： 给查询的结果进行分组
+        * 如果查询字段和group by 后的字段不一致， 则必须对该字段进行聚合处理
+        select country, avg(gongji) from sanguo group by country;
+    6、having 语句: 对分组聚合之后的结果进行筛选
+
+

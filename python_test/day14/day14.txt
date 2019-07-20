@@ -1,0 +1,195 @@
+day13回顾
+异常 Exception
+	异常处理语句：
+		try-except 语句
+			接收（捕获）异常通知，讲程序由异常转台改为正常状态
+		try-finally 语句
+			执行在正常流程和异常流程下都必须要执行的语句
+		raise 语句
+			抛出(发出)异常通知
+		assert 语句
+			根据条件发出异常AssertionError通知
+
+	常见的异常类型：
+		IndexError
+		ValueError
+		StopIteration
+		ImportError
+
+迭代器 iterator
+	是指可迭代对象用iter（iterable）返回的对象
+	可以通过迭代器想可迭代对象iterable取值
+	当迭代器不能提供数据时，会出发StopInteration异常
+
+
+
+
+day14 笔记
+生成器 Generator
+	什么是生成器？
+		生成器是能够动态提供数据的可迭代对象
+		生成器在程序运行时生成数据，与容器类不同，他通常不会在内存中保持大量的数据，而是现用现生成
+	生成器有两种：
+		生成器函数
+		生成器表达式
+
+	生成器函数
+		含有yield语句的函数是生成器函数，此函数被调用将返回一个生成器对象
+			注：yield 翻译为(生成或产生)
+		yield 语句
+			语法：
+				yield表达式
+			说明：
+				yield用于def函数中， 目的是将次函数作用生成器函数使用
+				yield用来生成数据，供迭代器的next(it) 函数使用
+			示例：
+				生成器函数的调用将返回一个生成器对象，生成器对象是一个可迭代对象
+				生成器函数调用
+	
+				myyield1.py
+				myyield2.py
+				myinteger.py
+		
+		练习：
+			写一个生成器函数 myeven(start, stop) 用来生成从start 开始到stop结束（不包含stop）区间内的一系列偶数
+				def myeven(start, stop):
+					... #此处自己写
+				
+				evens = list(myeven(10,20))
+				print(evens)  #[10,12,14,16,18]
+				for x in myeven(21, 30):
+					print(x) #打印22,24,26,28
+					
+				见：myyield_test.py
+		
+	生成器表达式
+		语法 
+		
+		
+列表推导式和生成器表达式的区别：
+	推导式会创建容器，容器中已有数据
+	生成器
+
+	
+	for x in [x**2 for x in range(1000000000000000000)]:
+	这种做法是 [x**2 for x in range(1000000000000000000)]， 在内容中生成所有的数字列表，占用大量内存
+	
+	for x in (x**2 for x in range(1000000000000000000))
+	这种做法是 从生成器中获取，每次需要具体数字，才临时提供，不会预先生成大量数据
+	
+	看下列函数的输出结果是什么？为什么？
+		第一个程序
+			L= [2,3,5,7]
+			a = [x*2 for x in L]    -----># 双方的差别在于 [] 和 ()
+			it = iter(A)
+			print(next(it)) # 4
+			L[1] = 333
+			print(next(it)) # 6
+		第二个程序
+			L = [2,3,5,7]
+			A = (x * 2 for x in L)
+			it = iter(A)
+			print(next(it)) #4
+			L[1] = 333
+			print(next(it))  #666
+
+迭代工具函数
+	zip(iter1, iter2, ... ...) 返回一个zip生成器对象，此对象用于生成一个元组，此元组的数据分别来自于参数中的每个可迭代对象，生成元组的个数由最小的一个可迭代对象大小决定
+		参数都是可迭代对象，从每个对象相同索引位置提取元素，组成一个元祖
+		示例：
+			zip.py
+		zip函数的实现方法：
+			myzip.py
+
+	enumerate(iterable, start=0)  返回一个enumrate 生成器对象，此对象生成类型为(索引，值)对的元组，默认索引从0开始，也可以用start开始
+		示例：
+			enumerate.py
+		enumerate函数的实现方法：
+			myenumerate.py
+
+
+字符串的字节数组
+字节串 bytes（也叫字节序列）
+	作用：
+		存储以字节为单位的数据
+	说明：
+		字节串是不可以改变的字节序列
+		字节是0~255之间的整数， 用来表示一个字节的取值
+		1个字节 由8位二进制数字组成。
+		1byte(字节) = 8bit(位)
+
+
+创建空字节串的字面值
+	b''
+	b""
+	b''''''
+	b""""""
+创建非空字节串的字面值
+	b'abcd'
+	b"abcd"
+	b'\x41\x42\x43\x44'
+	b"hello"
+字节串的构造函数 bytes
+	bytes() 生成一个空的字节串等同于b''
+	bytes(整数可迭代对象) 用可迭代对象初始化了一个字节串
+	bytes(整数n) 生成n个值位0的字节串
+	bytes(字节串，encoding='utf-8') 用字节串的转换编码生成一个字节串
+	
+	示例：
+		b = bytes() #b绑定 b''
+		b = bytes([65,66,67,68])  #b=b'ABCD'
+		b = bytes(5)  # b = '\x00\x00\x00\x00\x00'
+		
+bytes的运算
+	+ += × ×=
+	< <= > >= == !=
+	in /   not in
+	索引和切片
+	注：运算规则同字符串的运算规则
+
+能用于字节串的內建函数
+	len(x)
+	max(x)
+	min(x)
+	sum(x)
+	any(x)
+	all(x)
+
+bytes 和str的区别
+	bytes用来存储字节（0-255的整数）
+	str 用来存储unicode字符（0-0x10ffff的证书）
+	
+	bytes 与str的转换
+					编码(encode)
+		str -----------------------> bytes
+			b = s.encode(encoding='utf-8')
+			
+					解码（decode）
+		bytes ---------------------> str
+			s = b.decode(encoding = 'utf-8')
+		
+	示例：
+		s = 'ABC中文'
+		b = s.encode()   #等同于 b = s.encode('utf-8')
+		
+		s2 = b.decode()  #等同于 s2 = b.decode("utf-8") 将字节串解码为字符串
+
+字节数组 bytearray
+	可变的字节序列
+	构造函数 bytearray
+		bytearray() 创建空的字节数组
+		bytearray(整数n) 创建字节数组，长度为n，每个元素都为0
+		bytearray(整数可迭代对象) 用可迭代对象初始化一个字节数组
+		bytearray(字符串,encoding = 'utf-8') 用字符串的转换编码生成一个字节数组
+		
+	运算：
+		+ += × ×=
+		< <= > >= ++ !=
+		in /  not in
+		索引 index / 切片  slice
+		(字节数组的索引和切片可以赋值操作，规则同列表的索引和切片的赋值规则)
+		
+	bytearray 的方法参见：
+		python文档
+
+

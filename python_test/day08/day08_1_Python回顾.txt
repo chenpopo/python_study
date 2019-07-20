@@ -1,0 +1,54 @@
+1、Python 基本元素（数据类型，内奸函数，...）
+	1、数据类型
+		数值类型： int, float, comples, bool
+		容器：
+			不可变的容器：
+				str, tuple, frozenset
+			可变的容器：
+				list, dict, set
+	2、值
+		None, True, False
+	3、运算符
+		1、算术运算符
+			+,-,*,/,%,**,//
+		2、比较运算符
+			>,<,>=,<=,==,!=
+		3、成员运算符
+			in, not in
+			is, is not
+		4、布尔运算符
+			not, and, or
+		5、[] (索引,切片,建索引)
+			主要用在序列中
+	4、表达式
+		1+2
+		True and False
+		三种推导式：  列表，字典，集合
+	5、语句
+		1、表达式语句
+			所有的表达式都可以单独写在一行，形成一个语句：
+				1 + 2
+		2、赋值语句
+			a = 10
+			a = b = c = 10
+			x, y,z = 10,20,30
+			a[0] = 'zxf'
+			del 语句： 删除变量、元素，对象
+			if 语句：条件判断
+			
+	6、內建函数
+		len(), max(),min(),sum(),any(),all()
+		构造函数（创建同类型的数据对象）
+			bool(x): 创建一个bool类型的数值
+			int(x): 创建一个整数对象
+			float(x)
+			complex()
+			list(), tuple(), str(),dict(),set()
+			frozenset()
+		range(start, stop, step)
+		intput(), print()
+		
+		>>> help(__builtins__)  :  查看所有python內建函数
+
+		
+	

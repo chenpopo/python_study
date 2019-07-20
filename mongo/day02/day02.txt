@@ -1,0 +1,150 @@
+回顾
+
+1、创建数据库
+    show dbs 查看当前可用数据有那些
+    use db   选中db为当前操作数据库
+    mongodbdump  备份数据库
+    mongorestore 数据库恢复
+
+2、集合操作
+    db.createCollection()   创建集合
+        直接插入数据集合不存在则创建
+    db.collection.drop()    删除集合
+    db.collection.renameCollection()    重命名
+    show collections    查看集合
+3、文档
+    {键:值}
+4、插入文档
+    insertOne() 插入单个文档
+    insertMany()    插入多个文档
+    insert()    插入一个或多个文档
+    save()  _id冲突时可以覆盖
+5、查找
+    find(query, field) 查找文档
+    findOne(query, field)   查找一个文档
+
+6、query操作符
+    比较：　$eq 等于
+           $lt  小于
+           $lte 小于等于
+           $gt  大于
+           $gte 大于等于
+           $in  在集合中
+           $nin 不在集合中
+    逻辑：  $and
+           $or
+           $not
+           $nor
+    数组：  $all
+            $size
+    比较： $exists
+            $mod
+            $type
+7、数据处理函数
+    pretty()
+    limit()
+    skip()
+    sort()
+    count()
+    distinct()
+8、删除操作
+    deleteOne()
+    deleteMany()
+
+9、updateOne(query, update, upsert)
+    #查找并更新记录，如果不存在则插入该记录
+    db.class0.updateOne({name:"Lucy"}, {$set:{age:18}}, {upsert:true})
+
+   updateMany(query, update)
+    db.class0.updateMany({age:17}, {$set:{age:20}})
+
+   findOneAndUpdate(query, update)
+    查找一条记录，并更新该记录，同时将更新前的记录返回
+    db.class0.findOneAndUpdate({name:"Tom"}, {$set:{age:22}})
+
+10、修改器
+    $set　修改操作器，修改一个域或增加一个域
+
+    $unset 域删除操作器，删除查询结果的一个域
+        db.class0.updateOne({name:"Tom"},{$unset:{sex:""}})
+
+    $inc() 加法修改器
+        db.class0.updateMany({}, {$inc:{age:1}}) #所有人的年龄+1
+    $mul  乘法修改器
+        db.class0.updateMany({}, {$mul:{age:2}}) #所有人的年龄*2
+
+    $setOnInsert 当使用update*插入文档时，作为补充作用
+        db.class0.updateOne({name:"Bob"},{$set:{age:19}, $setOnInsert:{gender:"m"}}, {upsert:trye})
+        仅仅在新插入的文档记录中增加该新域
+
+    $max: 指当域值小于该值时，修改为该值，大于等于时不变
+    $min: 指当域值大于该值时，修改为该值，小于等于时不变
+
+11、数组操作器
+    $push  往数组中增加一个值
+        db.class1.updateOne({name:"小明"},{$push:{score:99}})
+
+    $pushAll 往数组中增加一组值    mongodb3.6以上版本不支持此方法
+        db.class1.update({name:"小红", {$pushAll:{score:[1,2,3]}})
+
+    $pull 从数组中删除一个值
+        db.class1.updateOne({name:"小明"},{$pull:{score:99}})
+    $pullAll 从数组中删除一组值
+        db.class1.updateOne({name:"小明"},{$pullAll:{score:[81,97]}})
+
+    $pop 从数组中弹出一个值　１从左到右　　　-1从右到左
+        db.class1.updateOne({name:"小明"},{$pop:{score:-1}})
+
+    $addToSet 往数组中增加一个值，但是不能和数组中已有值重复，否则不起作用
+
+    $each ： 对多个值逐一操作
+        db.class1.updateOne({name:"小明"}, {$push:{score:{$each:[10,20], $position:0}})
+
+    $position : 选择数组插入数据的位置
+
+    $sort: 对数组进行升序排序, 搭配$each　使用
+        db.class1.updateOne({name:"小明", {$push:{$score:[], sort:1}}})
+
+12、时间类型
+    new Date() 获取标准时间
+    Date() 获取当前系统时间
+    ISODate(date)  将指定时间按照mongodb标准的时间进行存储
+        date　格式 2019-07-13 13:30:45
+    ISODate().getValue() 获取当前时间毫秒数
+
+13、Null
+    表示域不存在或者对应的域为空
+
+14、索引
+    基于某个域创建索引, １正向索引 查询较早入库的数据 -1反向索引，查询最近入库的数据
+    db.class0.createIndex({name:1})
+
+    创建索引可选参数：
+        db.class0.createIndex({name:1}, {name:"Age"})
+            第二个{}　是给索引取名字
+
+        db.class0.createIndex({name:1},{unique:true})
+            第二个{} 是创建唯一索引(允许为空，但不能重复)
+
+        db.class0.createIndex({name:1}, {sparse:true})
+            第二个{} 是创建稀疏索引, 当某些记录没有name域时，则忽略此记录
+
+15、聚合索引
+    分组统计　按照sex域分组，统计每组多少人
+    db.class0.aggregate([{$group:{_id:'$sex', Age:{$sum:1}}}])
+
+    分组统计，按照sex域分组，统计每组年龄和
+    db.class0.aggregate([{$group:{_id:'$sex', Age:{$sum:"$age"}}}])
+
+
+    分组统计，按照sex域分组，统计每组平均年龄
+    db.class0.aggregate([{$group:{_id:'$sex', Age:{$avg:"$age"}}}])
+
+16、创建固定磁盘大小或固定记录数的　集合
+    db.createCollection(collection,{capped:true,size:10000,max:20})
+		capped 决定了是否固定集合
+		size   表示固定集合的大小　字节
+		max    标示固定集合的文档数
+
+
+

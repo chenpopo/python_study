@@ -1,0 +1,191 @@
+异常（高级） Exception
+    异常回顾：
+        try-except 语句  捕获异常通知，把异常流程变为正常流程
+        try-finally 语句 执行必须要执行的语句
+        raise语句 发送异常通知，同时进入异常流程
+with语句
+    语法：
+        with 表达式1[as 变量1], 表达式2[as 变量2], ... ...
+            语句块
+    作用：
+        使用于对资源进行访问的场合，确保使用过程中不管是否发生异常都会执行必要的清理操作，并释放资源
+        例如：文件使用后自动关闭，线程中锁的自动获取和释放等
+        当语句块执行完毕后，with中所占用的资源会自动释放,不需要代码显式释放资源
+    示例：
+        with.py
+    说明：
+        with语句同try-finally语句一样，不会改变流程的状态
+        with2.py
+
+环境管理器
+    类内有“__enter__”和"__exit__" 实例方法的类被成为环境管理器
+    能够用with 语句进行管理的对象必须是环境管理器
+    __enter__ 将在进入with 语句之前被使用，并返回 as 变量 管理的对象
+    __exit__ 将在离开with 语句时被调用，且可以用参数来判断在离开with语句时是否有异常发生并做出相应的处理
+
+    示例见：
+        with3.py
+
+    说明 __exit__ 方法有三个参数 exc_type, exc_val, exc_tb,  用于处理with语句块内抛出的异常
+        exc_type 异常类型
+        exc_val  异常信息内容
+        exc_tb   异常信息栈
+
+
+运算符重载
+    让自定义的类生成的对象(实例)能够实现运算符的操作
+
+    作用：
+        让自定义的类实例先內建对象一样进行运算符操作，让程序简介易读
+
+    方法名：                     运算符和表达式        说明
+    __add__(self, rhs)          self + rhs          加法
+    __sub__(self, rhs)          self - rhs          减法
+    __mul__(self, rhs)          self * rhs          乘法
+    __truediv__(self, rhs)      self / rhs          除法
+    __floordiv__(self, rhs)     self // rhs         地板除
+    __mod__(self, rhs)          self % rhs          求余
+    __pow__(self, rhs)          self ** rhs         幂运算
+
+
+
+练习：
+    1、实现自定义连个列表相加
+    class MyList:
+        def __init__(self, iterable = {}):
+            self.data = [x for x in iterable]
+        ... 此处自己处理
+
+    L1 = MyList(range(1,4))
+    L2 = MyList([4,5,6])
+
+    见 MyList
+
+
+反向算数运算符的重载
+    当运算符的左侧为內建类型时，右侧为自定义类的对象进行算术运算符时，会出现TypeErro错误
+    因无法修改内奸类型的代码来实现运算符的重载， 此时需要反向算术运算符重载
+
+    方法名：                     运算符和表达式        说明
+    __radd__(self, lhs)          lhs + self          加法
+    __rsub__(self, lhs)          lhs - self          减法
+    __rmul__(self, lhs)          lhs * self          乘法
+    __rtruediv__(self, lhs)      lhs / self          除法
+    __rfloordiv__(self, lhs)     lhs // self         地板除
+    __rmod__(self, lhs)          lhs % self          求余
+    __pow__(self, lhs)           lhs ** self         幂运算
+
+    示例见：
+        mylist2.py
+
+
+复合赋值算术运算符的重载
+    以复合赋值算术运算符 x += y 为主例， 此运算符会有限调用 x.__iadd__(y), 如果没有__iadd__方法，
+     会将复合赋值运算符拆解为 x = x + y然后调用x = x.__add__(y)方法，如果再不存在__add__(y),
+
+    方法名：                     运算符和表达式        说明
+    __add__(self, rhs)          self + rhs          加法
+    __sub__(self, rhs)          self - rhs          减法
+    __mul__(self, rhs)          self * rhs          乘法
+    __truediv__(self, rhs)      self / rhs          除法
+    __floordiv__(self, rhs)     self // rhs         地板除
+    __mod__(self, rhs)          self % rhs          求余
+    __pow__(self, rhs)          self ** rhs         幂运算
+    rhs(right hand side)
+
+    示例见：
+        mylist3.py
+
+比较运算符的重载
+    方法名：                     运算符和表达式        说明
+    __lt__(self, rhs)           self < rhs          小于
+    __lg__(self, rhs)           self <= rhs         小于等于
+    __gt__(self, rhs)           self > rhs          大于
+    __ge__(self, rhs)           self >= rhs         大于等于
+    __eq__(self, rhs)           selsf == rhs        等于
+    __ne__(self, rhs)           self != rhs         不等于
+
+    注：比较运算符通常返回布尔值 True 或 False
+
+
+位运算符的重载
+    方法名：                     运算符和表达式        说明
+    __and__(self, rhs)          self & rhs          位与
+    __or__(self, rhs)           self | rhs          位或
+    __xor__(self, rhs)          self ^ rhs          位异与
+    __lshift__(self, rhs)       self << rhs         左移
+    __rshift__(self, rhs)       self >> rhs         左移
+
+
+反向位运算符的重载
+    方法名：                     运算符和表达式        说明
+    __rand__(self, lhs)          lhs & self          位与
+    __ror__(self, lhs)           lhs | self          位或
+    __rxor__(self, lhs)          lhs ^ self          位异与
+    __rlshift__(self, lhs)       lhs << self         左移
+    __rrshift__(self, lhs)       lhs >> self         左移
+
+复合赋值位运算符的重载
+    方法名：                     运算符和表达式        说明
+    __iand__(self, lhs)          lhs &= self          位与
+    __ior__(self, lhs)           lhs |= self          位或
+    __ixor__(self, lhs)          lhs ^= self          位异与
+    __ilshift__(self, lhs)       lhs <<= self         左移
+    __irshift__(self, lhs)       lhs >>= self         左移
+
+
+一元运算符的重载
+    方法名：                     运算符和表达式        说明
+    __neg__(self)               -self               负号
+    __pos__(self)               +self               正号
+    __invert__(self)            ~self               取反
+
+一元运算符的重载语法：
+    class 类名:
+        def __xxx__(self):
+    示例见：mylist4.py
+
+
+in, not in 运算符的重载
+    方法名：                     运算符和表达式        说明
+    __contains__(self, e)       e in self           成员运算
+
+    示例见：nylist5.py
+    说明：in 和 not in 重载方法都是 __contains__, not in 相当于 in 的返回值取非
+
+索引和切片运算符的重载
+    方法名：                     运算符和表达式        说明
+    __getitem__(self, i)        x = self[i]         索引和切片取值
+    __setitem__(self, i, v)     self[i] = v         索引和切片赋值
+    __delitem__(self, i)        del self[i]         删除索引和切片
+
+    作用：
+        让自定义的累心的对象能够支持索引和切片操作
+    示例见：
+        mylist6.py
+        mylist7.py
+
+slice 构造函数
+    作用：
+        用于创建一个slice切片对象，此对象存储一个切片的起始值，终止值，步长信息
+    格式：
+        slice(start=None, stop=None, step=None)
+    slice对象的示例属性：
+        s.start 切片的起始值，默认为None
+        s.stop  切片的终止值，默认为None
+        s.step  切片的步长，默认为None
+
+
+特性属性 @property
+    实现其他语言所拥有的getter和setter功能
+    作用：
+        用来模拟一个属性
+        通过@property 装饰器可以对模拟属性赋值和取值加以控制
+    示例见：
+        property.py
+        property2.py
+
+
+pep8
+
+

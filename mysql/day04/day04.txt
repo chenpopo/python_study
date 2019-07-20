@@ -1,0 +1,105 @@
+    3、数据导入
+    * 创建相应表结构
+    * 拷贝文件
+        show variables like 'secure_file_priv';
+        sudo cp 数据文件 到目标目录
+        sudo chmod -777 目标文件
+    * 执行导入命令
+        load data infile "数据文件绝对路径"
+        into table 表名
+        fields terminated by ','
+        lines terminated by '\n';
+    数据导出
+        select *** from 表名
+        into outfile "文件绝对路劲"
+        field terminated by ','
+        lines terminated by '\n'
+4、表的复制
+   create table 新表 select * from 源表
+   根据　源表　查询字段创建新表结构，根据查出的数据导入新表中
+5、锁机制：解决客户端并发访问的冲突问题
+    1、按锁的类型
+        * 读锁(共享锁)
+            执行select: 加读锁后，别人不能修改，只能查
+        * 写锁(互斥锁，排他锁)
+            执行 update 等修改数据内容的sql语句时加锁，加写锁后别人不能修改，也不能查询
+            mysql 执行完　修改操作后会自动释放锁
+    ２、按锁的粒度
+        * 行级锁 InnoDB存储引擎支持行级锁
+        * 表级锁 MyISAM存储引擎支持表级锁
+6、存储引擎
+    1、基本操作
+        * 查看所有的存储引擎，show engines; 常见的有　InnoDB, MyISAM, MEMORY
+        * 查看表的存储引擎 show create table 表名
+        * 创建表指定存储引擎
+            create table 表名
+            (xxx)engine=myisam, charset=utf8, auto_increment=10000;
+        * 修改已有表的存储引擎
+            alter table 表名 engine=innodb;
+    2、存储引擎的特点
+        InnoDB的特点：
+            1、支持行级锁
+            2、支持事务操作
+            3、支持外键
+            4、表名.frm: 存放表结构和索引
+               表名.idb: 存放数据记录
+        MyISAM
+            1、支持表级锁
+            2、表名.frm: 存放表结构
+               表名.MYD: 存放表记录
+               表名.MYI:　存放表索引
+        MEMORY
+            1、表记录存储在内容中，表结构在磁盘中
+            2、读写速度非常快，效率高
+            3、一旦服务器重启，数据丢失
+    3、如何决定表使用那种存储引擎
+        * 查询操作多的表： MyISAM　会针对整张表加读锁，节省资源效率高
+        * 写操作多的表：InnoDB
+
+7、事务和事务回滚
+    １、定义：　一件事从开始发生到结果的过程
+        show variables like 'autocommit';  此参数默认开启
+    2、事务操作
+        * 开启事务
+            mysql > begin;  或者 start transaction;
+            mysql > ...
+        * 终止事务    mysql > commit; 或者 rollback;
+    3、案例：　银行转账
+        * 转账过程
+            mysql> 点击转账
+            mysql>begin;
+            mysql>update bank set money=money-5 where .
+            mysql>update bank set money=money+5 where .
+            mysql>commit;＃转账成功
+            mysql>rollback;＃转账失败
+        * 事务只针对表记录的操作，　对于库和表无效
+
+8、外键：　让当前表某个字段的值在另一个表某字段的范围内
+    1、语法
+        foreign key(字段名)
+        references 主表(字段名)
+        on update　级联动作
+        on delete 级联动作
+    2、使用规则
+        1、主表，从表字段数据类型要一致
+        2、主表被参考字段：主键
+    3、示例
+        表1：缴费信息表(财务)
+    4、 foreign key(stu_id)　references master(id)
+        on delete cascade
+        on update cascade
+    5、删除
+       alter table 表名 drop foreign key(外键名)
+       查看外键名 show create table 表名
+    6、已有表加外键
+        alter table 表名 add foreign key(字段名) references 主表(字段);
+    7、级联动作
+        1、cascade: 数据级联删除, 更新(字段)
+        2、restrict(默认): 从表有相关联记录，不让主表操作
+        3、set null: 主表删除，更新，从表相关联记录设置为null
+
+
+
+
+
+

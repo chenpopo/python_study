@@ -1,0 +1,32 @@
+1. mysql如何与python交互
+    1. python3： 有一个pymysql模块  python3中pymysql模块的安装不区分大小写
+        在线安装： sudo pip3 install pymysql
+    2. python2: MySQLdb
+        在线安装： sudo pip install mysql-python
+
+2. pymql 使用流程
+    * 数据库连接对象 : db = pymql.connection(***)
+    * 游标对象      : cursor = db.cursor()
+    * 执行SQL命令   : cursor.execute()
+    * 提交到数据库   : db.commit()
+    * 关闭游标对象   : cursor.close()
+    * 关闭数据库连接 : db.close()
+3. pymysql.connection(参数列表)
+    * host : 主机地址
+    * user : 用户名
+    * password : 密码
+    * port : 端口号 3306
+    * charset: 字符编码， 推荐使用utf8
+4. 数据库连接对象(db) 方法
+    db.connection()  进行数据库连接对象
+    db.execute() 执行SQL命令
+    db.commit() 提交
+    db.rollback() 回滚
+5. 游标对象(cursor)方法
+    cursor.execute(sql)  执行sql命令
+    cursor.fetchone()    取一条记录
+    cursor.fetchmany(n)  取n条记录 ((),(),())
+    cursor.fetchall()    取所有记录 ((),)
+    cursor.close()       关闭游标对象
+6. SQL 语句的参数化
+    
