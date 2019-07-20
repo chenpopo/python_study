@@ -42,7 +42,29 @@ git命令
     创建分支
     git branch
 
+远程仓地址管理
+    显示远程仓库地址
+    git remote -v
 
+    添加远程仓库地址
+    git remote add origin http:.../ssh@xxx
+
+    删除远程仓库地址
+    git remote rm origin
+
+    删除远程分支
+    git push origin :branch
+
+    删除远程标签
+    git push origin --delete tag v1.0
+
+仓库拉取更新
+    拉取远程commit到本地仓,并合并到本地工作区
+    git pull origin master
+
+    拉取远程commit到本地仓, 但不合并到本地
+    pull fetch origin master
+    git merge origin/master
 
 
 
